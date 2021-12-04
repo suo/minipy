@@ -1,0 +1,14 @@
+# @autodeps
+
+load("@fbcode_macros//build_defs:cpp_library.bzl", "cpp_library")
+
+cpp_library(
+    name = "minipy",
+    srcs = glob(["*.cpp"]),
+    headers = glob(["*.h"]),
+    deps = [
+        "fbsource//third-party/fmt:fmt",
+        "//minipy/common:common",
+        "//minipy/jitparse:parser",
+    ],
+)

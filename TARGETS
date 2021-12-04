@@ -1,0 +1,12 @@
+# @autodeps
+
+load("@fbcode_macros//build_defs:cpp_unittest.bzl", "cpp_unittest")
+
+cpp_unittest(
+    name = "test",
+    srcs = ["main.cpp"],
+    deps = [
+        "//minipy:minipy",
+        "//minipy/jitparse:parser",
+    ],
+)
