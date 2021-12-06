@@ -5,6 +5,7 @@
 #include <memory>
 #include <sstream>
 #include <unordered_map>
+#include <vector>
 
 namespace torch {
 namespace jit {
@@ -111,12 +112,12 @@ struct SourceView {
 // Source represents a code segment like SourceView, but the former owns a copy
 // of source text while the latter doesn't.
 struct Source : public SourceView {
-  //   explicit Source(
-  //       std::string text,
-  //       std::shared_ptr<SourceRangeUnpickler> gen_ranges = nullptr)
-  //       : SourceView(text, gen_ranges), text_(std::move(text)) {
-  //     text_view_ = text_;
-  //   }
+//     explicit Source(
+//         std::string text,
+//         std::shared_ptr<SourceRangeUnpickler> gen_ranges = nullptr)
+//         : SourceView(text, gen_ranges), text_(std::move(text)) {
+//       text_view_ = text_;
+//     }
 
   explicit Source(
       std::string_view text_view,

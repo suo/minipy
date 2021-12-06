@@ -227,8 +227,11 @@ class SymbolTable::SymbolTableBuilder {
     auto& symbols = cur()->symbols;
     auto it = symbols.find(name);
     if (flag == SymbolFlag::DEF_PARAM) {
-      // TODO
-      assert(it == symbols.end());
+      if (it != symbols.end()) {
+        // TODO better error message
+        throw std::runtime_error(
+            "symtable: duplicate parameter name not supported:");
+      }
       cur()->args.push_back(name);
     }
     symbols[name] |= flag;

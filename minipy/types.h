@@ -192,6 +192,14 @@ class DummyPyModule : public Dynamic {
   std::unordered_map<std::string, Obj> attrs_;
 };
 
+
+class Tuple : public Dynamic {
+  public:
+  explicit Tuple(std::vector<Obj> elements): Dynamic("tuple"), elements_(std::move(elements)) {}
+  private:
+  std::vector<Obj> elements_;
+};
+
 } // namespace dynamic
 } // namespace jit
 } // namespace torch
