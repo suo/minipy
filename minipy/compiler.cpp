@@ -14,48 +14,26 @@ namespace torch {
 namespace jit {
 namespace dynamic {
 namespace {
-// Represents a basic block (i.e. a straight line sequence of instructions)
-// TODO use this when we add ctrl flow
-// struct BasicBlock {
-//   std::vector<Instruction> instructions_;
-// };
 
 struct DictKeyHash {
-  size_t operator()(const Obj& ivalue) const {
+  size_t operator()(const Obj& obj) const {
     // TODO
-    return 1;
-    // if (ivalue.isInt()) {
-    //   return std::hash<int64_t>()(ivalue.toInt());
-    // } else if (ivalue.isString()) {
-    //   return std::hash<c10::string_view>()(ivalue.toStringView());
-    // } else if (ivalue.isDouble()) {
-    //   return std::hash<double>()(ivalue.toDouble());
-    // } else if (ivalue.isComplexDouble()) {
-    //   return c10::hash<c10::complex<double>>()(ivalue.toComplexDouble());
-    // } else if (ivalue.isBool()) {
-    //   return std::hash<bool>()(ivalue.toBool());
-    // } else if (ivalue.isTensor()) {
-    //   return
-    //   std::hash<TensorImpl*>()(ivalue.toTensor().unsafeGetTensorImpl());
-    // } else if (ivalue.isDevice()) {
-    //   return std::hash<Device>()(ivalue.toDevice());
-    // } else {
-    //   throw std::runtime_error(
-    //       "Can't hash IValues with tag '" + ivalue.tagKind() + "'");
-    // }
-  }
-};
-
-struct DictKeyEqualTo {
-  bool operator()(const Obj& lhs, const Obj& rhs) const {
-    // TODO
-    //  if (lhs.isTensor() && rhs.isTensor()) {
-    // for tensors, we compare only by identity (following how it's done in
-    // Python).
-    // return lhs.is(rhs);
-    // Otherwise, we first compare by identity for efficiency, then by value
-    // (see: [container equality]) return _fastEqualsForContainer(lhs, rhs);
-    return true;
+    if (obj.isInt()) {
+      return std::hash<int64_t>()(obj.toInt());
+    } else if (obj.isDouble()) {
+      return std::hash<double>()(obj.toDouble());
+    } else if (obj.isBool()) {
+      return std::hash<bool>()(obj.toBool());
+    } else if (obj.isDynamic()) {
+      return std::hash<c10::intrusive_ptr<Dynamic>>()(obj.toDynamic());
+    } else if (obj.isNone()) {
+      return std::hash<int64_t>()(0);
+    } else if (obj.isString()) {
+      return std::hash<std::string>()(obj.toStringRef());
+    } else {
+      throw std::runtime_error(
+          "Can't hash IValues with tag '" + obj.typeName() + "'");
+    }
   }
 };
 
@@ -271,7 +249,7 @@ class CompilerUnit {
   std::unordered_map<std::string, size_t> varnames_;
   // Constants
   // TODO make sure this is the right hash fn
-  std::unordered_map<Obj, size_t, DictKeyHash, DictKeyEqualTo> consts_;
+  std::unordered_map<Obj, size_t, DictKeyHash> consts_;
 
   SymbolTableEntry* symbolTableEntry_;
 

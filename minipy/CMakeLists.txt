@@ -11,3 +11,4 @@ add_subdirectory(common)
 add_subdirectory(jitparse)
 target_link_libraries(minipy parser fmt::fmt)
 
+add_subdirectory(test)

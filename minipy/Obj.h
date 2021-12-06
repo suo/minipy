@@ -7,12 +7,19 @@
 namespace torch {
 namespace jit {
 namespace dynamic {
-namespace detail {
 template <class T, class U>
 c10::intrusive_ptr<T> static_intrusive_pointer_cast(c10::intrusive_ptr<U> r) {
   return c10::intrusive_ptr<T>::reclaim(static_cast<T*>(r.release()));
 }
-} // namespace detail
+
+template <class T, class U>
+c10::intrusive_ptr<T> dynamic_intrusive_pointer_cast(c10::intrusive_ptr<U> r) {
+  auto r2 = r.release();
+  assert(r2);
+  auto ret = dynamic_cast<T*>(r2);
+  assert(ret);
+  return c10::intrusive_ptr<T>::reclaim(ret);
+}
 
 class Obj;
 
@@ -34,31 +41,59 @@ class Dynamic : public c10::intrusive_ptr_target {
   virtual Obj call(Obj args);
 
   virtual bool hasRichCompare() const;
-  virtual Obj richCompare(Obj o1, Obj o2, int opid);
+  virtual Obj richCompare(Obj other, int opid);
 
   virtual bool isNumber() const;
   virtual Obj add(Obj other);
+
+  virtual Obj str() const;
 
   std::string typeName_;
 };
 
 class Obj final {
  private:
-  enum class Tag : uint32_t { NONE, INT, DOUBLE, BOOL, OBJECT };
+  enum class Tag : uint32_t { NONE, INT, DOUBLE, BOOL, STRING, OBJECT };
 
  public:
   Obj() : Obj(nullptr) {}
   Obj(std::nullptr_t) : tag_(Tag::NONE) {}
 
-  /// String support
-  /*implicit*/ Obj(std::string v) { /*todo*/
+  ~Obj() {
+    if (isPtr()) {
+      c10::raw::intrusive_ptr::decref(payload_.as_intrusive_ptr);
+    }
   }
-  /*implicit*/ Obj(std::string_view v) : Obj(std::string(v)) {}
-  /*implicit*/ Obj(const char* v) : Obj(std::string(v)) {}
+  Obj(const Obj& other) : Obj(other.payload_, other.tag_) {
+    if (isPtr()) {
+      c10::raw::intrusive_ptr::incref(payload_.as_intrusive_ptr);
+    }
+  }
+  Obj& operator=(Obj&& rhs) noexcept {
+    Obj(std::move(rhs)).swap(*this); // this also sets rhs to None
+    return *this;
+  }
+  Obj& operator=(Obj const& rhs) {
+    Obj(rhs).swap(*this);
+    return *this;
+  }
+
+  void swap(Obj& rhs) noexcept {
+    std::swap(payload_, rhs.payload_);
+    std::swap(tag_, rhs.tag_);
+  }
+
+  /// String support
+  // These are for covenience I guess?
+  // TODO figure out whether these should just be modeled as dynamic objects or
+  // deserve first-class support in Obj
+
+  /*implicit*/ Obj(std::string v);
+  // /*implicit*/ Obj(std::string_view v) : Obj(std::string(v)) {}
+  // /*implicit*/ Obj(const char* v) : Obj(std::string(v)) {}
 
   bool isString() const {
-    // return tag_ == Tag::STRING;
-    return false;
+    return tag_ == Tag::STRING;
   }
   const std::string& toStringRef() const;
 
@@ -77,14 +112,53 @@ class Obj final {
   template <typename T>
   T to() const&;
 
+  // TODO how does Py do this?
+  const std::string& typeName() const;
+
+  /**
+   * Identity comparison. Checks if `this` is the same object as `rhs`. The
+   * semantics are the same as Python's `is` operator.
+   *
+   * NOTE: Like in Python, this operation is poorly defined for primitive types
+   * like numbers and strings. Prefer to use `==` unless you really want to
+   * check identity equality.
+   */
+  bool is(const Obj& rhs) const;
+
+  /**
+   * This implements the same semantics as `bool(lhs == rhs)` in Python. which
+   * is the same as `equals()` except for Tensor types.
+   * TODO reword this, explain bool thing, remove Tensor comment
+   */
+  friend bool operator==(const Obj& lhs, const Obj& rhs);
+  friend bool operator!=(const Obj& lhs, const Obj& rhs);
+
+  /// None
+  bool isNone() const {
+    return tag_ == Tag::NONE;
+  }
+
+  /// Double
   /*implicit*/ Obj(double v) : tag_(Tag::DOUBLE) {
     payload_.as_double = v;
   }
+  bool isDouble() const {
+    return tag_ == Tag::DOUBLE;
+  }
+  bool toDouble() const {
+    if (tag_ != Tag::DOUBLE) {
+      throw std::runtime_error("toDouble() called on non-int Obj");
+    }
+    return payload_.as_double;
+  }
+
   /// Int
   /*implicit*/ Obj(int64_t v) : tag_(Tag::INT) {
     payload_.as_int = v;
   }
-
+  bool isInt() const {
+    return tag_ == Tag::INT;
+  }
   int64_t toInt() const {
     if (tag_ != Tag::INT) {
       throw std::runtime_error("toInt() called on non-int Obj");
@@ -108,7 +182,7 @@ class Obj final {
       std::enable_if_t<std::is_base_of<Dynamic, T>::value, std::nullptr_t> =
           nullptr>
   /*implicit*/ Obj(c10::intrusive_ptr<T> v)
-      : Obj(detail::static_intrusive_pointer_cast<Dynamic>(v)) {}
+      : Obj(static_intrusive_pointer_cast<Dynamic>(v)) {}
   /*implicit*/ Obj(c10::intrusive_ptr<Dynamic> v);
 
   bool isDynamic() const {
@@ -124,18 +198,28 @@ class Obj final {
     if (!isDynamic()) {
       throw std::runtime_error("toDynamicRef() called on non-dynamic Obj");
     }
-    auto t = c10::intrusive_ptr<Dynamic>::reclaim(
-        static_cast<Dynamic*>(payload_.as_intrusive_ptr));
-    clearToNone();
-    return t;
+    return moveToIntrusivePtr<Dynamic>();
   }
 
   c10::intrusive_ptr<Dynamic> toDynamic() const& {
     if (!isDynamic()) {
       throw std::runtime_error("toDynamicRef() called on non-dynamic Obj");
     }
-    auto r = c10::intrusive_ptr<Dynamic>::reclaim(
-        static_cast<Dynamic*>(payload_.as_intrusive_ptr));
+    return toIntrusivePtr<Dynamic>();
+  }
+
+  template <class T>
+  c10::intrusive_ptr<T> moveToIntrusivePtr() {
+    auto t = c10::intrusive_ptr<T>::reclaim(
+        static_cast<T*>(payload_.as_intrusive_ptr));
+    clearToNone();
+    return t;
+  }
+
+  template <typename T>
+  c10::intrusive_ptr<T> toIntrusivePtr() const {
+    auto r = c10::intrusive_ptr<T>::reclaim(
+        static_cast<T*>(payload_.as_intrusive_ptr));
     auto p = r;
     r.release();
     return p;
@@ -157,8 +241,9 @@ class Obj final {
     return *static_cast<Dynamic*>(payload_.as_intrusive_ptr);
   }
 
+  // Object protocol
+  Obj str() const;
   Obj richCompare(Obj other, int opId);
-
   Obj getattr(const std::string& name) {
     if (!isDynamic()) {
       throw std::runtime_error("no getattr");
@@ -166,7 +251,6 @@ class Obj final {
 
     return toDynamic()->getattr(name);
   }
-
   void setattr(const std::string& name, Obj v) {
     if (!isDynamic()) {
       throw std::runtime_error("no setattr");
@@ -184,7 +268,12 @@ class Obj final {
   bool isNumber() const;
   Obj add(Obj other);
 
+
  private:
+  bool isPtr() const {
+    return tag_ == Tag::OBJECT || tag_ == Tag::STRING;
+  }
+
   union Payload {
     std::nullptr_t nul;
     int64_t as_int;
@@ -196,11 +285,36 @@ class Obj final {
   Obj(Payload p, Tag t) : payload_(p), tag_(t) {}
   Payload payload_;
   Tag tag_;
-  bool is_intrusive_ptr;
 };
 
 inline Obj::Obj(c10::intrusive_ptr<Dynamic> v) : tag_(Tag::OBJECT) {
   payload_.as_intrusive_ptr = v.release();
+}
+
+namespace detail {
+
+template <class T>
+struct _fake_type {};
+
+template <
+    typename T,
+    std::enable_if_t<std::is_base_of<Dynamic, T>::value, std::nullptr_t> =
+        nullptr>
+c10::intrusive_ptr<T> generic_to(Obj obj, _fake_type<c10::intrusive_ptr<T>>) {
+  auto ret = dynamic_intrusive_pointer_cast<T>(obj.toDynamic());
+  return ret;
+}
+
+} // namespace detail
+
+template <typename T>
+inline T Obj::to() && {
+  return generic_to(std::move(*this), detail::_fake_type<T>{});
+}
+
+template <typename T>
+inline T Obj::to() const& {
+  return generic_to(*this, detail::_fake_type<T>{});
 }
 
 } // namespace dynamic

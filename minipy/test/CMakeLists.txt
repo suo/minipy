@@ -1,0 +1,5 @@
+add_executable(test_symbol_table test_symbol_table.cpp)
+target_link_libraries(test_symbol_table gtest_main minipy)
+
+include(GoogleTest)
+gtest_discover_tests(test_symbol_table)

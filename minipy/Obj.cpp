@@ -1,6 +1,7 @@
 #include "Obj.h"
 
 #include <fmt/format.h>
+#include <minipy/types.h>
 
 namespace torch {
 namespace jit {
@@ -37,7 +38,7 @@ Obj Dynamic::call(Obj args) {
 bool Dynamic::hasRichCompare() const {
   return false;
 }
-Obj Dynamic::richCompare(Obj o1, Obj o2, int opid) {
+Obj Dynamic::richCompare(Obj other, int opid) {
   throw std::runtime_error(
       fmt::format("comparisons not implemented on type: '{}'", typeName_));
 }
@@ -48,6 +49,10 @@ Obj Dynamic::add(Obj other) {
   throw std::runtime_error(
       fmt::format("add not implemented on type: '{}'", typeName_));
 }
+Obj Dynamic::str() const {
+  throw std::runtime_error(
+      fmt::format("str not implemented on type: '{}'", typeName_));
+}
 
 Obj Obj::call(Obj args) {
   if (!isDynamic()) {
@@ -57,7 +62,53 @@ Obj Obj::call(Obj args) {
 }
 
 Obj Obj::richCompare(Obj other, int opId) {
-  throw std::runtime_error("no richCompare");
+  switch (tag_) {
+    case Tag::OBJECT:
+      return toDynamicRef().richCompare(other, opId);
+    case Tag::INT: {
+      const auto lhs = toInt();
+      // TODO this will crash
+      const auto& rhs = other.toInt();
+      // TODO don't use an int here
+      switch (opId) {
+        case 0: // lt
+          return lhs < rhs;
+        case 1: // lte
+          return lhs <= rhs;
+        case 2: // e
+          return lhs == rhs;
+        case 3: // ne
+          return lhs != rhs;
+        case 4: // gt
+          return lhs > rhs;
+        case 5: // gte
+          return lhs >= rhs;
+      }
+    }
+    case Tag::STRING: {
+      const auto& lhs = toStringRef();
+      // TODO this will crash
+      const auto& rhs = other.toStringRef();
+      // TODO don't use an int here
+      switch (opId) {
+        case 0: // lt
+          return lhs < rhs;
+        case 1: // lte
+          return lhs <= rhs;
+        case 2: // e
+          return lhs == rhs;
+        case 3: // ne
+          return lhs != rhs;
+        case 4: // gt
+          return lhs > rhs;
+        case 5: // gte
+          return lhs >= rhs;
+      }
+    }
+    default:
+      throw std::runtime_error(
+          fmt::format("comparisons not implemented on type: '{}'", typeName()));
+  }
 }
 
 // TODO figure out a better way of checking the numeric protocol
@@ -79,21 +130,98 @@ Obj Obj::add(Obj other) {
     case Tag::INT:
       return toInt() + other.toInt();
     default:
-    throw std::runtime_error("no add");
+      throw std::runtime_error("no add");
   }
 }
 
-const std::string& Obj::toStringRef() const {
-  // todo error
-  if (!isString()) {
-    throw std::runtime_error("Expected String but got TODO");
+bool Obj::is(const Obj& rhs) const {
+  const Obj& lhs = *this;
+  if (lhs.isPtr()) {
+    return rhs.isPtr() && lhs.tag_ == rhs.tag_ &&
+        lhs.payload_.as_intrusive_ptr == rhs.payload_.as_intrusive_ptr;
   }
+  return lhs == rhs;
+}
 
-  static std::string foo = "";
-  return foo;
-  // return static_cast<const c10::ivalue::ConstantString*>(
-  //            payload.u.as_intrusive_ptr)
-  //     ->string();
+bool operator!=(const Obj& lhs, const Obj& rhs) {
+  return !(lhs == rhs);
+}
+
+const std::string& Obj::typeName() const {
+  switch (tag_) {
+    case Tag::NONE: {
+      static const std::string ret = "None";
+      return ret;
+    }
+    case Tag::INT: {
+      static const std::string ret = "int";
+      return ret;
+    }
+    case Tag::DOUBLE: {
+      static const std::string ret = "double";
+      return ret;
+    }
+    case Tag::BOOL: {
+      static const std::string ret = "bool";
+      return ret;
+    }
+    case Tag::STRING: {
+      static const std::string ret = "str";
+      return ret;
+    }
+    case Tag::OBJECT: {
+      return toDynamic()->typeName_;
+    }
+  }
+}
+
+bool operator==(const Obj& lhs, const Obj& rhs) {
+  switch (lhs.tag_) {
+    case Obj::Tag::DOUBLE:
+      return rhs.isDouble() && lhs.toDouble() == rhs.toDouble();
+    case Obj::Tag::INT:
+      return rhs.isInt() && lhs.toInt() == rhs.toInt();
+    case Obj::Tag::BOOL:
+      return rhs.isBool() && lhs.toBool() == rhs.toBool();
+    case Obj::Tag::NONE:
+      return rhs.isNone();
+    case Obj::Tag::STRING:
+      return lhs.toStringRef() == rhs.toStringRef();
+    case Obj::Tag::OBJECT:
+      return lhs.is(rhs);
+  }
+}
+
+Obj::Obj(std::string s) : tag_(Tag::STRING) {
+  auto ret = c10::make_intrusive<String>(std::move(s));
+  payload_.as_intrusive_ptr = ret.release();
+}
+
+const std::string& Obj::toStringRef() const {
+  if (tag_ != Tag::STRING) {
+    throw std::runtime_error(
+        fmt::format("Expected string, got {}", typeName()));
+  }
+  return static_cast<String*>(payload_.as_intrusive_ptr)->value();
+}
+
+Obj Obj::str() const {
+  switch (tag_) {
+    case Tag::NONE: {
+      static const Obj ret = "None";
+      return ret;
+    }
+    case Tag::INT:
+      return Obj(fmt::format("{}", toInt()));
+    case Tag::DOUBLE:
+      return Obj(fmt::format("{}", toDouble()));
+    case Tag::BOOL:
+      return Obj(fmt::format("{}", toBool()));
+    case Tag::STRING:
+      return *this;
+    case Tag::OBJECT:
+      return toDynamic()->str();
+  }
 }
 
 } // namespace dynamic

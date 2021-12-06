@@ -192,12 +192,30 @@ class DummyPyModule : public Dynamic {
   std::unordered_map<std::string, Obj> attrs_;
 };
 
-
 class Tuple : public Dynamic {
-  public:
-  explicit Tuple(std::vector<Obj> elements): Dynamic("tuple"), elements_(std::move(elements)) {}
-  private:
+ public:
+  explicit Tuple(std::vector<Obj> elements)
+      : Dynamic("tuple"), elements_(std::move(elements)) {}
+  const std::vector<Obj>& elements() const {
+    return elements_;
+  }
+
+  Obj str() const override;
+ private:
   std::vector<Obj> elements_;
+};
+
+class String : public Dynamic {
+ public:
+  explicit String(std::string value)
+      : Dynamic("str"), value_(std::move(value)) {}
+  const std::string& value() const {
+    return value_;
+  }
+
+
+ private:
+  std::string value_;
 };
 
 } // namespace dynamic

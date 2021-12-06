@@ -13,13 +13,13 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     add_compile_options (-fcolor-diagnostics)
 endif ()
 
+enable_testing()
+
+
+## Dependencies
+# fmt
 find_package(fmt)
-
-include_directories(${PROJECT_SOURCE_DIR})
-add_subdirectory(minipy)
-add_executable(test main.cpp)
-target_link_libraries(test minipy)
-
+# gtest
 include(FetchContent)
 FetchContent_Declare(
   googletest
@@ -29,5 +29,11 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-add_executable(test_symbol_table test_symbol_table.cpp)
-target_link_libraries(test_symbol_table gtest_main minipy)
+include_directories(${PROJECT_SOURCE_DIR})
+
+# hard code asan for now:
+add_compile_options(-fno-omit-frame-pointer -fsanitize=address)
+add_link_options(-fsanitize=address)
+
+add_subdirectory(minipy)
+add_subdirectory(examples)
