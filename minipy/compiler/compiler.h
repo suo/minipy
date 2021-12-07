@@ -1,7 +1,7 @@
 #pragma once
 
-#include <minipy/jitparse/tree_views.h>
-#include <minipy/types.h>
+#include "minipy/jitparse/tree_views.h"
+#include "minipy/interpreter/types.h"
 
 #include <memory>
 

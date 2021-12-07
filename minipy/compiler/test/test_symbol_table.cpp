@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include <minipy/symbol_table.h>
-#include <minipy/jitparse/parser.h>
+#include "minipy/compiler/symbol_table.h"
+#include "minipy/jitparse/parser.h"
 
 namespace torch {
 namespace jit {

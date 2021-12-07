@@ -1,7 +1,7 @@
 #pragma once
 
-#include <minipy/types.h>
-#include "minipy/Stack.h"
+#include "minipy/interpreter/types.h"
+#include "minipy/interpreter/Stack.h"
 
 namespace torch {
 namespace jit {

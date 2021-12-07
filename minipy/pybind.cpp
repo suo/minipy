@@ -1,8 +1,8 @@
 // #include <pybind11/pytypes.h>
-// #include <minipy/pybind.h>
+// #include "minipy/pybind.h"
 
 // #include <fmt/format.h>
-// #include <minipy/compiler.h>
+// #include "minipy/compiler.h"
 // #include "ATen/core/ivalue_inl.h"
 // #include "jit/dynamic/types.h"
 // #include "jit/python/pybind_utils.h"

@@ -1,7 +1,7 @@
 #include <fmt/format.h>
-#include <minipy/compiler.h>
-#include <minipy/jitparse/parser.h>
-#include "minipy/interpreter.h"
+#include "minipy/compiler/compiler.h"
+#include "minipy/interpreter/interpreter.h"
+#include "minipy/jitparse/parser.h"
 
 static constexpr auto src = R"SCRIPT(
 def foo(x):

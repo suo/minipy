@@ -1,8 +1,8 @@
 #pragma once
 
-#include <minipy/common/intrusive_ptr.h>
 #include <string>
 #include <string_view>
+#include "minipy/common/intrusive_ptr.h"
 
 namespace torch {
 namespace jit {
@@ -267,7 +267,6 @@ class Obj final {
 
   bool isNumber() const;
   Obj add(Obj other);
-
 
  private:
   bool isPtr() const {

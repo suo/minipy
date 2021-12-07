@@ -1,7 +1,7 @@
 #pragma once
 
-#include <minipy/Obj.h>
-#include <minipy/instruction.h>
+#include "minipy/interpreter/Obj.h"
+#include "minipy/interpreter/instruction.h"
 
 #include <functional>
 #include <unordered_map>

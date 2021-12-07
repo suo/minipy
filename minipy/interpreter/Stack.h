@@ -1,4 +1,6 @@
-#include "minipy/Obj.h"
+#pragma once
+
+#include "minipy/interpreter/Obj.h"
 
 #include <vector>
 

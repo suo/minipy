@@ -1,6 +1,6 @@
 #pragma once
-#include <minipy/jitparse/error_report.h>
-#include <minipy/jitparse/lexer.h>
+#include "minipy/jitparse/error_report.h"
+#include "minipy/jitparse/lexer.h"
 
 namespace torch {
 namespace jit {

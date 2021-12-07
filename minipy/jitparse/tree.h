@@ -6,8 +6,8 @@
 #include <unordered_map>
 #include <vector>
 
-#include <minipy/common/intrusive_ptr.h>
-#include <minipy/jitparse/lexer.h>
+#include "minipy/common/intrusive_ptr.h"
+#include "minipy/jitparse/lexer.h"
 
 namespace torch {
 namespace jit {

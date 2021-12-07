@@ -1,9 +1,9 @@
-#include <minipy/jitparse/parser.h>
+#include "parser.h"
 
-#include <minipy/jitparse/lexer.h>
-#include <minipy/jitparse/parse_string_literal.h>
-#include <minipy/jitparse/tree.h>
-#include <minipy/jitparse/tree_views.h>
+#include "minipy/jitparse/lexer.h"
+#include "minipy/jitparse/parse_string_literal.h"
+#include "minipy/jitparse/tree.h"
+#include "minipy/jitparse/tree_views.h"
 
 namespace torch {
 namespace jit {
@@ -228,8 +228,10 @@ struct ParserImpl {
         return std::nullopt;
     }
   }
-  TreeRef
-  parseTrinary(TreeRef true_branch, const SourceRange& range, int binary_prec) {
+  TreeRef parseTrinary(
+      TreeRef true_branch,
+      const SourceRange& range,
+      int binary_prec) {
     auto cond = parseExp();
     L.expect(TK_ELSE);
     auto false_branch = parseExp(binary_prec);
@@ -780,8 +782,10 @@ struct ParserImpl {
 
  private:
   // short helpers to create nodes
-  TreeRef
-  create_compound(int kind, const SourceRange& range, TreeList&& trees) {
+  TreeRef create_compound(
+      int kind,
+      const SourceRange& range,
+      TreeList&& trees) {
     return Compound::create(kind, range, std::move(trees));
   }
   TreeRef makeList(const SourceRange& range, TreeList&& trees) {

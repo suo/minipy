@@ -1,6 +1,6 @@
 #pragma once
 
-#include <minipy/jitparse/tree_views.h>
+#include "minipy/jitparse/tree_views.h"
 
 #include <memory>
 #include <string>

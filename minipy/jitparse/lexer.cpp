@@ -1,4 +1,4 @@
-#include <minipy/jitparse/lexer.h>
+#include "minipy/jitparse/lexer.h"
 
 #include <mutex>
 #include <string>

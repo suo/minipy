@@ -1,2 +1,2 @@
 add_executable(example main.cpp)
-target_link_libraries(example minipy)
+target_link_libraries(example minipy fmt::fmt)

@@ -1,8 +1,8 @@
 #include "compiler.h"
 
-#include <minipy/symbol_table.h>
-#include <minipy/types.h>
-#include "minipy/instruction.h"
+#include "minipy/compiler/symbol_table.h"
+#include "minipy/interpreter/types.h"
+#include "minipy/interpreter/instruction.h"
 
 #include <fmt/format.h>
 #include <fmt/ostream.h>

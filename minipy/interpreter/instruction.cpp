@@ -1,4 +1,4 @@
-#include <minipy/instruction.h>
+#include "instruction.h"
 
 #include <fmt/format.h>
 

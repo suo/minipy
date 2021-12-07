@@ -1,8 +1,8 @@
 #pragma once
 
-#include <minipy/jitparse/parser_constants.h>
-#include <minipy/jitparse/source_range.h>
-#include <minipy/jitparse/strtod.h>
+#include "minipy/jitparse/parser_constants.h"
+#include "minipy/jitparse/source_range.h"
+#include "minipy/jitparse/strtod.h"
 #include <algorithm>
 #include <cassert>
 #include <clocale>

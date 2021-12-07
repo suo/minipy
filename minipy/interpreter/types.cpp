@@ -1,13 +1,10 @@
-#include <minipy/types.h>
+#include "types.h"
 
-// #include <ATen/core/stack.h>
-#include <minipy/interpreter.h>
-// #include <torch/csrc/jit/runtime/operator.h>
+#include "minipy/interpreter/interpreter.h"
 
 #include <fmt/format.h>
 #include <fmt/ostream.h>
 #include <sstream>
-// #include "ATen/core/Obj_inl.h"
 
 namespace torch {
 namespace jit {

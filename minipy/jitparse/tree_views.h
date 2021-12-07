@@ -1,7 +1,7 @@
 #pragma once
-#include <minipy/jitparse/error_report.h>
-#include <minipy/jitparse/strtod.h>
-#include <minipy/jitparse/tree.h>
+#include "minipy/jitparse/error_report.h"
+#include "minipy/jitparse/strtod.h"
+#include "minipy/jitparse/tree.h"
 
 #include <functional>
 #include <iostream>

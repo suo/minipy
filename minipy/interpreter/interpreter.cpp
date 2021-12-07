@@ -1,4 +1,4 @@
-#include <minipy/interpreter.h>
+#include "interpreter.h"
 
 #include <fmt/format.h>
 #include <fmt/ostream.h>

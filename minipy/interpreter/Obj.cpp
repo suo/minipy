@@ -1,7 +1,7 @@
 #include "Obj.h"
 
 #include <fmt/format.h>
-#include <minipy/types.h>
+#include "minipy/interpreter/types.h"
 
 namespace torch {
 namespace jit {

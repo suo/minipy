@@ -1,14 +1,7 @@
-add_library(minipy
-    compiler.cpp
-    instruction.cpp
-    interpreter.cpp
-    symbol_table.cpp
-    types.cpp
-    Obj.cpp
-)
+add_library(minipy INTERFACE)
 
 add_subdirectory(common)
 add_subdirectory(jitparse)
-target_link_libraries(minipy parser fmt::fmt)
-
-add_subdirectory(test)
+add_subdirectory(interpreter)
+add_subdirectory(compiler)
+target_link_libraries(minipy INTERFACE parser interpreter compiler)
