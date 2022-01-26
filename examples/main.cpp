@@ -1,6 +1,6 @@
 #include <fmt/format.h>
-#include "minipy/compiler/compiler.h"
-#include "minipy/interpreter/interpreter.h"
+#include "minipy/compiler/Compiler.h"
+#include "minipy/interpreter/Interpreter.h"
 #include "minipy/jitparse/parser.h"
 
 static constexpr auto src = R"SCRIPT(

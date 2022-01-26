@@ -1,4 +1,4 @@
-#include "symbol_table.h"
+#include "SymbolTable.h"
 
 #include "minipy/jitparse/lexer.h"
 #include "minipy/jitparse/tree_views.h"

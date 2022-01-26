@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "minipy/compiler/symbol_table.h"
+#include "minipy/compiler/SymbolTable.h"
 #include "minipy/jitparse/parser.h"
 
 namespace minipy {

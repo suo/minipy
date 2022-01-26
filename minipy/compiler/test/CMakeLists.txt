@@ -1,4 +1,4 @@
-add_executable(test_symbol_table test_symbol_table.cpp)
+add_executable(test_symbol_table SymbolTableTest.cpp)
 target_link_libraries(test_symbol_table gtest_main minipy)
 
 include(GoogleTest)

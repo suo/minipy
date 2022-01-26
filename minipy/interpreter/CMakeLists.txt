@@ -1,6 +1,6 @@
 add_library(interpreter
-    interpreter.cpp
-    types.cpp
+    Interpreter.cpp
+    Types.cpp
     Obj.cpp
 )
 

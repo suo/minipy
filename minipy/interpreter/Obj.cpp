@@ -1,6 +1,6 @@
 #include "Obj.h"
 
-#include "minipy/interpreter/types.h"
+#include "minipy/interpreter/Types.h"
 
 namespace minipy {
 

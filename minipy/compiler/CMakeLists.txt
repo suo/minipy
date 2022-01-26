@@ -1,6 +1,6 @@
 add_library(compiler
-    compiler.cpp
-    symbol_table.cpp
+    Compiler.cpp
+    SymbolTable.cpp
     Serialization.cpp
 )
 

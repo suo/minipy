@@ -1,10 +1,10 @@
-// #include <pybind11/pytypes.h>
+// #include <pybind11/pyTypes.h>
 // #include "minipy/pybind.h"
 
 // #include <fmt/format.h>
-// #include "minipy/compiler.h"
+// #include "minipy/Compiler.h"
 // #include "ATen/core/ivalue_inl.h"
-// #include "jit/dynamic/types.h"
+// #include "jit/dynamic/Types.h"
 // #include "jit/python/pybind_utils.h"
 
 // namespace torch {

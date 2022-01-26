@@ -1,8 +1,8 @@
 #pragma once
 
 #include <fmt/format.h>
-#include "minipy/common/instruction.h"
-#include "minipy/interpreter/types.h"
+#include "minipy/common/Instruction.h"
+#include "minipy/interpreter/Types.h"
 
 namespace minipy {
 std::string toString(OpCode c);
