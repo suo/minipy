@@ -5,8 +5,7 @@
 #include "minipy/jitparse/tree.h"
 #include "minipy/jitparse/tree_views.h"
 
-namespace torch {
-namespace jit {
+namespace minipy {
 
 Decl mergeTypesFromTypeComment(
     const Decl& decl,
@@ -819,5 +818,4 @@ Mod Parser::parseModule() {
   return pImpl->parseModule();
 }
 
-} // namespace jit
-} // namespace torch
+} // namespace minipy

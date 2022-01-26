@@ -7,8 +7,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace torch {
-namespace jit {
+namespace minipy {
 
 class SourceRangeUnpickler;
 struct SourceRange;
@@ -112,12 +111,12 @@ struct SourceView {
 // Source represents a code segment like SourceView, but the former owns a copy
 // of source text while the latter doesn't.
 struct Source : public SourceView {
-//     explicit Source(
-//         std::string text,
-//         std::shared_ptr<SourceRangeUnpickler> gen_ranges = nullptr)
-//         : SourceView(text, gen_ranges), text_(std::move(text)) {
-//       text_view_ = text_;
-//     }
+  //     explicit Source(
+  //         std::string text,
+  //         std::shared_ptr<SourceRangeUnpickler> gen_ranges = nullptr)
+  //         : SourceView(text, gen_ranges), text_(std::move(text)) {
+  //       text_view_ = text_;
+  //     }
 
   explicit Source(
       std::string_view text_view,
@@ -251,7 +250,7 @@ struct OwnedSourceRange : public SourceRange {
 
 struct SourceRangeHasher {
  public:
-  size_t operator()(const torch::jit::SourceRange& key) const;
+  size_t operator()(const SourceRange& key) const;
 };
 
 struct StackEntry {
@@ -280,5 +279,4 @@ using SourceRangeRecords = std::vector<TaggedRange>;
 using SourceRangeTagMap =
     std::unordered_map<SourceRange, int64_t, SourceRangeHasher>;
 
-} // namespace jit
-} // namespace torch
+} // namespace minipy

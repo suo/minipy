@@ -2,9 +2,8 @@
 #include <cassert>
 // #include <torch/csrc/jit/serialization/source_range_serialization.h>
 
-namespace torch {
-namespace jit {
-size_t SourceRangeHasher::operator()(const torch::jit::SourceRange& key) const {
+namespace minipy {
+size_t SourceRangeHasher::operator()(const SourceRange& key) const {
   return (
       std::hash<uintptr_t>()(reinterpret_cast<uintptr_t>(key.source().get())) ^
       std::hash<size_t>()(key.start()) ^ std::hash<size_t>()(key.end()));
@@ -206,5 +205,4 @@ void SourceRange::print_with_context(
   }
 }
 
-} // namespace jit
-} // namespace torch
+} // namespace minipy

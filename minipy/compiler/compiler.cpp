@@ -11,9 +11,7 @@
 #include <stdexcept>
 #include <unordered_set>
 
-namespace torch {
-namespace jit {
-namespace dynamic {
+namespace minipy {
 namespace {
 
 struct DictKeyHash {
@@ -991,6 +989,4 @@ c10::intrusive_ptr<CodeObject> emit(Def def) {
   Compiler compiler(std::move(st));
   return compiler.run(def);
 }
-} // namespace dynamic
-} // namespace jit
-} // namespace torch
+} // namespace minipy

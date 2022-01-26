@@ -1,8 +1,5 @@
 #pragma once
 
-#include "minipy/jitparse/parser_constants.h"
-#include "minipy/jitparse/source_range.h"
-#include "minipy/jitparse/strtod.h"
 #include <algorithm>
 #include <cassert>
 #include <clocale>
@@ -11,9 +8,11 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include "minipy/jitparse/parser_constants.h"
+#include "minipy/jitparse/source_range.h"
+#include "minipy/jitparse/strtod.h"
 
-namespace torch {
-namespace jit {
+namespace minipy {
 
 // single character tokens are just the character itself '+'
 // multi-character tokens need an entry here
@@ -311,7 +310,7 @@ struct SharedParserData {
     const char* startptr = str.data() + start;
     // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
     char* endptr;
-    torch::jit::strtod_c(startptr, &endptr);
+    minipy::strtod_c(startptr, &endptr);
     *len = endptr - startptr;
     // check if the number is complex valued
     // access is safe because string is assumed to be null terminated
@@ -539,5 +538,4 @@ struct Lexer {
   std::vector<Token> next_tokens;
   SharedParserData& shared;
 };
-} // namespace jit
-} // namespace torch
+} // namespace minipy

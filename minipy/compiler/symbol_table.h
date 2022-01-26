@@ -7,9 +7,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace torch {
-namespace jit {
-namespace dynamic {
+namespace minipy {
 enum class SymbolFlag : int {
   /* global stmt */
   DEF_GLOBAL = 1,
@@ -93,6 +91,4 @@ class SymbolTable {
   std::vector<std::unique_ptr<SymbolTableEntry>> entries_;
   std::unordered_map<TreeRef, SymbolTableEntry*> lookupTable_;
 };
-} // namespace dynamic
-} // namespace jit
-} // namespace torch
+} // namespace minipy

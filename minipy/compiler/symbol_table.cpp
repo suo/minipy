@@ -8,9 +8,7 @@
 #include <cassert>
 #include <unordered_set>
 
-namespace torch {
-namespace jit {
-namespace dynamic {
+namespace minipy {
 SymbolScope SymbolInfo::getScope() const {
   if (*this & SymbolFlag::DEF_LOCAL || *this & SymbolFlag::DEF_PARAM) {
     return SymbolScope::LOCAL;
@@ -362,6 +360,4 @@ std::unique_ptr<SymbolTable> SymbolTable::build(Def def) {
 SymbolTableEntry* SymbolTable::lookup(TreeRef astNode) {
   return lookupTable_.at(astNode);
 }
-} // namespace dynamic
-} // namespace jit
-} // namespace torch
+} // namespace minipy

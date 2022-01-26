@@ -4,8 +4,7 @@
 #include <string>
 #include <unordered_map>
 
-namespace torch {
-namespace jit {
+namespace minipy {
 
 static const std::unordered_map<int, int> binary_prec = {
     {TK_IF, 1},
@@ -101,5 +100,4 @@ SharedParserData& sharedParserData() {
   return data;
 }
 
-} // namespace jit
-} // namespace torch
+} // namespace minipy

@@ -3,9 +3,7 @@
 #include "minipy/compiler/symbol_table.h"
 #include "minipy/jitparse/parser.h"
 
-namespace torch {
-namespace jit {
-namespace dynamic {
+namespace minipy {
 
 TEST(SymbolTable, DuplicateParams) {
   static constexpr auto moduleSource = R"SCRIPT(
@@ -75,5 +73,3 @@ def foo(x):
   EXPECT_TRUE(ste->symbols["y"] & SymbolFlag::DEF_LOCAL);
 }
 } // namespace dynamic
-} // namespace jit
-} // namespace torch

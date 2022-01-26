@@ -9,9 +9,7 @@
 #include "minipy/common/intrusive_ptr.h"
 #include "minipy/jitparse/lexer.h"
 
-namespace torch {
-namespace jit {
-
+namespace minipy {
 // Trees are used to represent all forms of TC IR, pre- and post-typechecking.
 // Rather than have a full class hierarchy for all TC statements, trees are a
 // slight variation of Lisp s-expressions. For instance, the expression a*b+1
@@ -141,8 +139,10 @@ struct Compound : public Tree {
   const TreeList& trees() const override {
     return trees_;
   }
-  static TreeRef
-  create(int kind, const SourceRange& range_, TreeList&& trees_) {
+  static TreeRef create(
+      int kind,
+      const SourceRange& range_,
+      TreeList&& trees_) {
     return c10::make_intrusive<Compound>(kind, range_, std::move(trees_));
   }
   bool isAtom() const override {
@@ -217,5 +217,4 @@ static inline std::ostream& operator<<(std::ostream& out, const TreeRef& t) {
   return out << pretty_tree(t);
 }
 
-} // namespace jit
-} // namespace torch
+} // namespace minipy

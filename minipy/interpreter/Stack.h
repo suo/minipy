@@ -2,11 +2,10 @@
 
 #include "minipy/interpreter/Obj.h"
 
+#include <tuple>
 #include <vector>
 
-namespace torch {
-    namespace jit {
-        namespace dynamic {
+namespace minipy {
 
 using Stack = std::vector<Obj>;
 
@@ -108,14 +107,16 @@ static inline void push_one(Stack& stack, Type&& arg) {
 
 template <typename... Types>
 static inline void push(Stack& stack, Types&&... args) {
-  (void)std::initializer_list<int>{(push_one(stack, std::forward<Types>(args)), 0)...};
+  (void)std::initializer_list<int>{
+      (push_one(stack, std::forward<Types>(args)), 0)...};
 }
 template <typename... Types>
 static inline void push(Stack* stack, Types&&... args) {
   return push(*stack, std::forward<Types>(args)...);
 }
 // template <class T>
-// static inline void push_list_elements(Stack& stack, const c10::List<T>& elements) {
+// static inline void push_list_elements(Stack& stack, const c10::List<T>&
+// elements) {
 //   for (T elem : elements) {
 //     stack.push_back(std::move(elem));
 //   }
@@ -156,8 +157,4 @@ inline void pack(Stack& stack, std::tuple<Args...>&& t) {
   TuplePacker<sizeof...(Args), Args...>::execute(stack, std::move(t));
 }
 
-
-
-        }
-    }
-}
+} // namespace minipy

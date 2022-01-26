@@ -4,9 +4,7 @@
 
 #include <sstream>
 
-namespace torch {
-namespace jit {
-namespace dynamic {
+namespace minipy {
 // namespace {
 // Operation resolveOverloads(Symbol name_, Stack& stack) {
 //   const auto& overloads = getAllOperatorsFor(name_);
@@ -245,6 +243,4 @@ Obj Tuple::str() const {
 
   return Obj(ss.str());
 }
-} // namespace dynamic
-} // namespace jit
-} // namespace torch
+} // namespace minipy

@@ -1,11 +1,9 @@
 #pragma once
 
-#include "minipy/interpreter/types.h"
 #include "minipy/interpreter/Stack.h"
+#include "minipy/interpreter/types.h"
 
-namespace torch {
-namespace jit {
-namespace dynamic {
+namespace minipy {
 
 class Interpreter {
  public:
@@ -20,6 +18,4 @@ class Interpreter {
   const CodeObject& code_;
   FrameObject& frame_;
 };
-} // namespace dynamic
-} // namespace jit
-} // namespace torch
+} // namespace minipy

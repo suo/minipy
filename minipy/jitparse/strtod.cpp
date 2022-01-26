@@ -70,8 +70,7 @@ double parse_inf_or_nan(const char* p, char** endptr) {
 
 } // namespace
 
-namespace torch {
-namespace jit {
+namespace minipy {
 
 #ifdef _MSC_VER
 C10_EXPORT double strtod_c(const char* nptr, char** endptr) {
@@ -246,5 +245,4 @@ float strtof_c(const char* nptr, char** endptr) {
   return (float)strtod_c(nptr, endptr);
 }
 
-} // namespace jit
-} // namespace torch
+} // namespace minipy

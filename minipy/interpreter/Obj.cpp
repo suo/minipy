@@ -2,9 +2,7 @@
 
 #include "minipy/interpreter/types.h"
 
-namespace torch {
-namespace jit {
-namespace dynamic {
+namespace minipy {
 
 bool Dynamic::hasHasattr() const {
   return false;
@@ -186,7 +184,7 @@ bool operator==(const Obj& lhs, const Obj& rhs) {
 }
 
 Obj::Obj(std::string s) : tag_(Tag::STRING) {
-  auto ret = c10::make_intrusive<String>(std::move(s));
+  auto ret = c10::make_intrusive<StringObj>(std::move(s));
   payload_.as_intrusive_ptr = ret.release();
 }
 
@@ -194,7 +192,7 @@ const std::string& Obj::toStringRef() const {
   if (tag_ != Tag::STRING) {
     throw std::runtime_error("Expected string, got " + typeName());
   }
-  return static_cast<String*>(payload_.as_intrusive_ptr)->value();
+  return static_cast<StringObj*>(payload_.as_intrusive_ptr)->value();
 }
 
 Obj Obj::str() const {
@@ -216,6 +214,4 @@ Obj Obj::str() const {
   }
 }
 
-} // namespace dynamic
-} // namespace jit
-} // namespace torch
+} // namespace minipy

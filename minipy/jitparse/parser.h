@@ -1,10 +1,9 @@
 #pragma once
+#include <memory>
 #include "minipy/jitparse/tree.h"
 #include "minipy/jitparse/tree_views.h"
-#include <memory>
 
-namespace torch {
-namespace jit {
+namespace minipy {
 
 struct Decl;
 struct ParserImpl;
@@ -29,5 +28,4 @@ struct Parser {
   std::unique_ptr<ParserImpl> pImpl;
 };
 
-} // namespace jit
-} // namespace torch
+} // namespace minipy

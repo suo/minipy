@@ -7,8 +7,7 @@
 #include <iostream>
 #include <string>
 
-namespace torch {
-namespace jit {
+namespace minipy {
 
 // clang-format off
 // TreeView provides a statically-typed way to traverse the tree, which should
@@ -333,8 +332,10 @@ struct Attribute : public TreeView {
   Expr value() const {
     return Expr(subtree(1));
   }
-  static Attribute
-  create(const SourceRange& range, const Ident& name, const TreeRef& value) {
+  static Attribute create(
+      const SourceRange& range,
+      const Ident& name,
+      const TreeRef& value) {
     return Attribute(Compound::create(TK_ATTRIBUTE, range, {name, value}));
   }
 };
@@ -505,8 +506,10 @@ struct While : public Stmt {
   List<Stmt> body() const {
     return List<Stmt>(subtree(1));
   }
-  static While
-  create(const SourceRange& range, const Expr& cond, const List<Stmt>& body) {
+  static While create(
+      const SourceRange& range,
+      const Expr& cond,
+      const List<Stmt>& body) {
     return While(Compound::create(TK_WHILE, range, {cond, body}));
   }
 };
@@ -678,8 +681,10 @@ struct Assert : public Stmt {
   Maybe<Expr> msg() const {
     return Maybe<Expr>(subtree(1));
   }
-  static Assert
-  create(const SourceRange& range, const Expr& test, const Maybe<Expr>& msg) {
+  static Assert create(
+      const SourceRange& range,
+      const Expr& test,
+      const Maybe<Expr>& msg) {
     return Assert(Compound::create(TK_ASSERT, range, {test, msg}));
   }
 };
@@ -778,8 +783,11 @@ struct BinOp : public Expr {
   Expr rhs() const {
     return Expr(subtree(1));
   }
-  static BinOp
-  create(const SourceRange& range, int kind, const Expr& lhs, const Expr& rhs) {
+  static BinOp create(
+      const SourceRange& range,
+      int kind,
+      const Expr& lhs,
+      const Expr& rhs) {
     return BinOp(Compound::create(kind, range, {lhs, rhs}));
   }
 };
@@ -832,7 +840,7 @@ struct Const : public Expr {
     // We can't pass in nullptr as the dummy pointer gets dereferenced for
     // Android version of strtod_c().
     char* dummy;
-    return torch::jit::strtod_c(subtree(0)->stringValue().c_str(), &dummy);
+    return minipy::strtod_c(subtree(0)->stringValue().c_str(), &dummy);
   }
   const std::string& text() const {
     return subtree(0)->stringValue();
@@ -890,8 +898,10 @@ struct Select : public Expr {
   Ident selector() const {
     return Ident(subtree(1));
   }
-  static Select
-  create(const SourceRange& range, const Expr& value, const Ident& selector) {
+  static Select create(
+      const SourceRange& range,
+      const Expr& value,
+      const Ident& selector) {
     return Select(Compound::create('.', range, {value, selector}));
   }
 };
@@ -983,8 +993,10 @@ struct WithItem : public Expr {
     return Maybe<Var>(subtree(1));
   }
 
-  static WithItem
-  create(const SourceRange& range, const Expr& target, const Maybe<Var>& var) {
+  static WithItem create(
+      const SourceRange& range,
+      const Expr& target,
+      const Maybe<Var>& var) {
     return WithItem(Compound::create(TK_WITH_ITEM, range, {target, var}));
   }
 };
@@ -1106,13 +1118,12 @@ struct Delete : public Stmt {
   }
 };
 
-} // namespace jit
-} // namespace torch
+} // namespace minipy
 
 namespace std {
 
 template <typename T>
-struct iterator_traits<torch::jit::ListIterator<T>>
-    : std::iterator_traits<torch::jit::TreeList::const_iterator> {};
+struct iterator_traits<minipy::ListIterator<T>>
+    : std::iterator_traits<minipy::TreeList::const_iterator> {};
 
 } // namespace std

@@ -2,8 +2,7 @@
 #include "minipy/jitparse/error_report.h"
 #include "minipy/jitparse/lexer.h"
 
-namespace torch {
-namespace jit {
+namespace minipy {
 
 inline bool isCharCount(char c, const std::string& str, size_t start, int len) {
   // count checks from [start, start + len)
@@ -82,5 +81,4 @@ inline std::string parseStringLiteral(
   return ret_str;
 }
 
-} // namespace jit
-} // namespace torch
+} // namespace minipy

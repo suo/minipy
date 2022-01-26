@@ -2,8 +2,7 @@
 
 #include "minipy/jitparse/tree.h"
 
-namespace torch {
-namespace jit {
+namespace minipy {
 
 struct Call {
   std::string fn_name;
@@ -49,5 +48,4 @@ const ErrorReport& operator<<(const ErrorReport& e, const T& t) {
   return e;
 }
 
-} // namespace jit
-} // namespace torch
+} // namespace minipy

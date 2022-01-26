@@ -1,7 +1,6 @@
 #include "minipy/jitparse/error_report.h"
 
-namespace torch {
-namespace jit {
+namespace minipy {
 
 // Avoid storing objects with destructor in thread_local for mobile build.
 #ifndef C10_MOBILE
@@ -78,5 +77,4 @@ const char* ErrorReport::what() const noexcept {
   return the_message.c_str();
 }
 
-} // namespace jit
-} // namespace torch
+} // namespace minipy

@@ -1,15 +1,13 @@
 #pragma once
 
-#include "minipy/interpreter/Obj.h"
 #include "minipy/common/instruction.h"
+#include "minipy/interpreter/Obj.h"
 
 #include <functional>
 #include <unordered_map>
 #include <vector>
 
-namespace torch {
-namespace jit {
-namespace dynamic {
+namespace minipy {
 
 // This leaks memory without a gc
 
@@ -200,23 +198,21 @@ class Tuple : public Dynamic {
   }
 
   Obj str() const override;
+
  private:
   std::vector<Obj> elements_;
 };
 
-class String : public Dynamic {
+class StringObj : public Dynamic {
  public:
-  explicit String(std::string value)
+  explicit StringObj(std::string value)
       : Dynamic("str"), value_(std::move(value)) {}
   const std::string& value() const {
     return value_;
   }
 
-
  private:
   std::string value_;
 };
 
-} // namespace dynamic
-} // namespace jit
-} // namespace torch
+} // namespace minipy

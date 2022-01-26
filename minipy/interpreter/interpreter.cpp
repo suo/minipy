@@ -1,8 +1,6 @@
 #include "interpreter.h"
 
-namespace torch {
-namespace jit {
-namespace dynamic {
+namespace minipy {
 Obj Interpreter::run() {
   while (true) {
     Instruction instruction = code_.instructions[pc];
@@ -133,6 +131,4 @@ Obj Interpreter::run() {
     }
   }
 }
-} // namespace dynamic
-} // namespace jit
-} // namespace torch
+} // namespace minipy

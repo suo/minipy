@@ -1,7 +1,5 @@
 #pragma once
 
-namespace torch {
-namespace jit {
+namespace minipy {
 static const char* valid_single_char_tokens = "+-*/%@()[]:,={}><.?!&^|~";
-} // namespace jit
-} // namespace torch
+} // namespace minipy

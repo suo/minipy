@@ -4,9 +4,7 @@
 #include <string_view>
 #include "minipy/common/intrusive_ptr.h"
 
-namespace torch {
-namespace jit {
-namespace dynamic {
+namespace minipy {
 template <class T, class U>
 c10::intrusive_ptr<T> static_intrusive_pointer_cast(c10::intrusive_ptr<U> r) {
   return c10::intrusive_ptr<T>::reclaim(static_cast<T*>(r.release()));
@@ -316,6 +314,4 @@ inline T Obj::to() const& {
   return generic_to(*this, detail::_fake_type<T>{});
 }
 
-} // namespace dynamic
-} // namespace jit
-} // namespace torch
+} // namespace minipy

@@ -14,11 +14,11 @@ foo(6)
 foo(4)
 )SCRIPT";
 
-using namespace ::torch::jit::dynamic;
+using namespace ::minipy;
 
 int main() {
   fmt::print("Compiling code:\n{}\n", src);
-  torch::jit::Parser p(std::make_shared<torch::jit::Source>(src));
+  Parser p(std::make_shared<Source>(src));
   auto mod = p.parseModule();
 
   auto code = emit(mod);
