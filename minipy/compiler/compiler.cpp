@@ -1,8 +1,9 @@
 #include "compiler.h"
 
+#include "minipy/common/instruction.h"
+#include "minipy/compiler/Serialization.h"
 #include "minipy/compiler/symbol_table.h"
 #include "minipy/interpreter/types.h"
-#include "minipy/interpreter/instruction.h"
 
 #include <fmt/format.h>
 #include <fmt/ostream.h>
@@ -125,20 +126,21 @@ struct BasicBlock {
   size_t offset;
 
   void dump(size_t indentLevel = 0) const {
-    indent(indentLevel);
-    fmt::print("BasicBlock ({})\n", (void*)this);
-    for (const auto& instruction : instructions_) {
-      indent(indentLevel);
-      if (instruction.jumpTarget_) {
-        fmt::print(
-            "{} (target: {})\n",
-            instruction.inst_,
-            (void*)instruction.jumpTarget_);
-      } else {
-        fmt::print("{}\n", instruction.inst_);
-      }
-    }
-    fmt::print("\n");
+    // indent(indentLevel);
+
+    // fmt::print("BasicBlock ({})\n", (void*)this);
+    // for (const auto& instruction : instructions_) {
+    //   indent(indentLevel);
+    //   if (instruction.jumpTarget_) {
+    //     fmt::print(
+    //         "{} (target: {})\n",
+    //         instruction.inst_,
+    //         (void*)instruction.jumpTarget_);
+    //   } else {
+    //     fmt::print("{}\n", instruction.inst_);
+    //   }
+    // }
+    // fmt::print("\n");
   }
 };
 
@@ -395,7 +397,7 @@ class Compiler {
     auto co = Assembler::run(cs);
 
     fmt::print("\nBytecode for fn '{}':\n", def.name().name());
-    co->dump();
+    minipy::dump(*co);
     size_t idx = curUnit_->addConst(co);
     emit(Instruction(OpCode::LOAD_CONST, idx));
     idx = curUnit_->addConst(def.name().name());
@@ -423,7 +425,7 @@ class Compiler {
     curUnit_->emitNameOp(classDef.name(), NameContext::Store);
 
     fmt::print("\nBytecode for class '{}':\n", classDef.name().name());
-    co->dump();
+    minipy::dump(*co);
   }
 
   void emit(Instruction instruction) {
@@ -951,7 +953,7 @@ std::string gatherName(const CodeObject& codeObject, size_t curIdx) {
 
 std::vector<std::string> gatherInstanceAttributes(
     const CodeObject& codeObject) {
-  codeObject.dump();
+  minipy::dump(codeObject);
   const auto& instructions = codeObject.instructions;
   std::vector<std::string> names;
   std::unordered_set<std::string> seen;

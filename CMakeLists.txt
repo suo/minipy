@@ -32,8 +32,8 @@ FetchContent_MakeAvailable(googletest)
 include_directories(${PROJECT_SOURCE_DIR})
 
 # hard code asan for now:
-add_compile_options(-fno-omit-frame-pointer -fsanitize=address)
-add_link_options(-fsanitize=address)
+# add_compile_options(-fno-omit-frame-pointer -fsanitize=address)
+# add_link_options(-fsanitize=address)
 
 add_subdirectory(minipy)
 add_subdirectory(examples)

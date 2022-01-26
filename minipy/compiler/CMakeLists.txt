@@ -1,6 +1,7 @@
 add_library(compiler
     compiler.cpp
     symbol_table.cpp
+    Serialization.cpp
 )
 
 target_link_libraries(compiler PUBLIC interpreter)

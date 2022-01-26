@@ -2,8 +2,6 @@
 
 #include "minipy/interpreter/interpreter.h"
 
-#include <fmt/format.h>
-#include <fmt/ostream.h>
 #include <sstream>
 
 namespace torch {
@@ -44,43 +42,6 @@ namespace dynamic {
 //           })));
 // }
 // } // namespace
-
-void CodeObject::dump() const {
-  size_t offset = 0;
-  for (const Instruction& instruction : instructions) {
-    if (instruction.op == OpCode::LOAD_FAST ||
-        instruction.op == OpCode::STORE_FAST) {
-      fmt::print(
-          "{:<8}{} ({})\n",
-          offset++,
-          instruction,
-          varnames.at(instruction.arg1));
-    } else if (
-        instruction.op == OpCode::STORE_GLOBAL ||
-        instruction.op == OpCode::LOAD_GLOBAL ||
-        instruction.op == OpCode::LOAD_METHOD ||
-        instruction.op == OpCode::LOAD_NAME ||
-        instruction.op == OpCode::STORE_NAME ||
-        instruction.op == OpCode::LOAD_ATTR) {
-      fmt::print(
-          "{:<8}{} ({})\n", offset++, instruction, names.at(instruction.arg1));
-    } else if (instruction.op == OpCode::LOAD_CONST) {
-      // TODO can't print obj yet
-      //   fmt::print(
-      //       "{:<8}{:20} {:<4} ({})\n",
-      //       offset++,
-      //       toString(instruction.op),
-      //       instruction.arg1,
-      //       constants.at(instruction.arg1));
-    } else {
-      fmt::print(
-          "{:<8}{:20} {}\n",
-          offset++,
-          toString(instruction.op),
-          instruction.arg1);
-    }
-  }
-}
 
 // AtenOp::AtenOp(const std::string& name)
 //     : Dynamic("AtenOp"), name_(Symbol::fromQualString(name)) {}
@@ -193,8 +154,8 @@ Obj UserObject::getattr(const std::string& name) const {
   }
 
   // 3. TODO look in base classes as well
-  throw std::runtime_error(fmt::format(
-      "'{}' object has no attribute '{}'", class_->typeName_, name));
+  throw std::runtime_error(
+      class_->typeName_ + "object has no attribute" + name);
 }
 
 Obj MethodObj::call(Obj args) {
@@ -276,7 +237,7 @@ std::ostream& printList(
   return out;
 }
 
-}
+} // namespace
 
 Obj Tuple::str() const {
   std::ostringstream ss;

@@ -1,16 +1,11 @@
 #include "interpreter.h"
 
-#include <fmt/format.h>
-#include <fmt/ostream.h>
-
 namespace torch {
 namespace jit {
 namespace dynamic {
 Obj Interpreter::run() {
-  fmt::print("\nRUNNING INTERPRETER\n\n");
   while (true) {
     Instruction instruction = code_.instructions[pc];
-    fmt::print("Running: {}\n", toString(instruction.op));
     switch (instruction.op) {
       case OpCode::LOAD_FAST: {
         push(stack, frame_.fastLocals.at(instruction.arg1));
@@ -20,8 +15,7 @@ Obj Interpreter::run() {
         const std::string& name = code_.names[instruction.arg1];
         auto it = frame_.globals.find(name);
         if (it == frame_.globals.end()) {
-          throw std::runtime_error(
-              fmt::format("Couldn't find global '{}'", name));
+          throw std::runtime_error("Couldn't find global: " + name);
         }
         push(stack, frame_.globals[name]);
         ++pc;
@@ -133,10 +127,9 @@ Obj Interpreter::run() {
         return pop(stack);
       } break;
       default:
-        assert(
-            false);
-            // , fmt::format("UNHANDLED OP: {}\n",
-            // toString(instruction.op)));
+        assert(false);
+        // , fmt::format("UNHANDLED OP: {}\n",
+        // toString(instruction.op)));
     }
   }
 }

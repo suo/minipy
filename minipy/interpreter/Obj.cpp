@@ -1,6 +1,5 @@
 #include "Obj.h"
 
-#include <fmt/format.h>
 #include "minipy/interpreter/types.h"
 
 namespace torch {
@@ -11,47 +10,41 @@ bool Dynamic::hasHasattr() const {
   return false;
 }
 bool Dynamic::hasattr(const std::string& name) const {
-  throw std::runtime_error(
-      fmt::format("'hasattr' not implemented on type: '{}'", typeName_));
+  throw std::runtime_error("'hasattr' not implemented on type:  " + typeName_);
 }
 bool Dynamic::hasGetattr() const {
   return false;
 }
 Obj Dynamic::getattr(const std::string& name) const {
-  throw std::runtime_error(
-      fmt::format("'getattr' not implemented on type: '{}'", typeName_));
+  throw std::runtime_error("'getattr' not implemented on type:  " + typeName_);
 }
 bool Dynamic::hasSetattr() const {
   return false;
 }
 void Dynamic::setattr(const std::string& name, Obj value) {
-  throw std::runtime_error(
-      fmt::format("'setattr' not implemented on type: '{}'", typeName_));
+  throw std::runtime_error("'setattr' not implemented on type:  " + typeName_);
 }
 bool Dynamic::hasCall() const {
   return false;
 }
 Obj Dynamic::call(Obj args) {
-  throw std::runtime_error(
-      fmt::format("'call' not implemented on type: '{}'", typeName_));
+  throw std::runtime_error("'call' not implemented on type:  " + typeName_);
 }
 bool Dynamic::hasRichCompare() const {
   return false;
 }
 Obj Dynamic::richCompare(Obj other, int opid) {
   throw std::runtime_error(
-      fmt::format("comparisons not implemented on type: '{}'", typeName_));
+      "'richCompare' not implemented on type:  " + typeName_);
 }
 bool Dynamic::isNumber() const {
   return false;
 }
 Obj Dynamic::add(Obj other) {
-  throw std::runtime_error(
-      fmt::format("add not implemented on type: '{}'", typeName_));
+  throw std::runtime_error("'add' not implemented on type:  " + typeName_);
 }
 Obj Dynamic::str() const {
-  throw std::runtime_error(
-      fmt::format("str not implemented on type: '{}'", typeName_));
+  throw std::runtime_error("'str' not implemented on type:  " + typeName_);
 }
 
 Obj Obj::call(Obj args) {
@@ -107,7 +100,7 @@ Obj Obj::richCompare(Obj other, int opId) {
     }
     default:
       throw std::runtime_error(
-          fmt::format("comparisons not implemented on type: '{}'", typeName()));
+          "comparisons not implemented on type: " + typeName());
   }
 }
 
@@ -199,8 +192,7 @@ Obj::Obj(std::string s) : tag_(Tag::STRING) {
 
 const std::string& Obj::toStringRef() const {
   if (tag_ != Tag::STRING) {
-    throw std::runtime_error(
-        fmt::format("Expected string, got {}", typeName()));
+    throw std::runtime_error("Expected string, got " + typeName());
   }
   return static_cast<String*>(payload_.as_intrusive_ptr)->value();
 }
@@ -212,11 +204,11 @@ Obj Obj::str() const {
       return ret;
     }
     case Tag::INT:
-      return Obj(fmt::format("{}", toInt()));
+      return Obj(std::to_string(toInt()));
     case Tag::DOUBLE:
-      return Obj(fmt::format("{}", toDouble()));
+      return Obj(std::to_string(toDouble()));
     case Tag::BOOL:
-      return Obj(fmt::format("{}", toBool()));
+      return Obj(std::to_string(toBool()));
     case Tag::STRING:
       return *this;
     case Tag::OBJECT:

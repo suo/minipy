@@ -1,7 +1,7 @@
 #pragma once
 
 #include "minipy/interpreter/Obj.h"
-#include "minipy/interpreter/instruction.h"
+#include "minipy/common/instruction.h"
 
 #include <functional>
 #include <unordered_map>
@@ -16,7 +16,6 @@ namespace dynamic {
 // Instructions + tables that instructions reference.
 struct CodeObject : Dynamic {
   CodeObject() : Dynamic("CodeObject") {}
-  void dump() const;
 
   std::vector<std::string> names;
   std::vector<std::string> varnames;
